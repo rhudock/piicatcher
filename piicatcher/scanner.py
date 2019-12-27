@@ -33,7 +33,7 @@ class RegexScanner(Scanner):
         if regex_result.street_addresses:  # pylint: disable=no-member
             types.append(PiiTypes.ADDRESS)
         if regex_result.icd10_codes: # pylint: disable=no-member
-            types.append(PiiTypes.ICD10)
+            types.append(PiiTypes.ICDTEN)
         return types
 
 

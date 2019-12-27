@@ -32,8 +32,8 @@ class RegexScanner(Scanner):
             types.append(PiiTypes.CREDIT_CARD)
         if regex_result.street_addresses:  # pylint: disable=no-member
             types.append(PiiTypes.ADDRESS)
-        if regex_result.cpt_code: # pylint: disable=no-member
-            types.append(PiiTypes.CPT)
+        if regex_result.icd10_codes: # pylint: disable=no-member
+            types.append(PiiTypes.ICD10)
         return types
 
 

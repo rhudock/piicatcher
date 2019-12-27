@@ -20,6 +20,7 @@ class PiiTypes(Enum):
     SSN = auto()
     USER_NAME = auto()
     PASSWORD = auto()
+    CPT = auto()
 
 
 # Ref: https://stackoverflow.com/questions/24481852/serialising-an-enum-member-to-json

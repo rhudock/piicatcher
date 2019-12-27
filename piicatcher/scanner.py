@@ -34,6 +34,8 @@ class RegexScanner(Scanner):
             types.append(PiiTypes.ADDRESS)
         if regex_result.icd10_codes: # pylint: disable=no-member
             types.append(PiiTypes.ICDTEN)
+        if regex_result.icd9_codes: # pylint: disable=no-member
+            types.append(PiiTypes.ICDNINE)
         return types
 
 

@@ -4,6 +4,8 @@ from commonregex import CommonRegex
 import logging
 import re
 import spacy
+import scispacy
+
 
 from piicatcher.piitypes import PiiTypes
 
@@ -43,7 +45,8 @@ class NERScanner(Scanner):
     """A scanner that uses Spacy NER for entity recognition.
         see https://www.geeksforgeeks.org/python-named-entity-recognition-ner-using-spacy/"""
     def __init__(self):
-        self.nlp = spacy.load('en_core_web_sm')
+        self.nlp = spacy.load("en_core_web_sm")
+        self.nlp.max_length = 15000000
 
     def scan(self, text):
         """Scan the text and return an array of PiiTypes that are found"""

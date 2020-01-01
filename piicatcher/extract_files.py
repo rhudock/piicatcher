@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
 # database management and abstraction
 from sqlalchemy import (create_engine, Table, Column, Integer,
                         String, MetaData)
@@ -23,7 +22,6 @@ import uuid
 
 Base = declarative_base()
 
-
 def main():
     file = Path("db.sqlite")
     if file.exists():
@@ -32,15 +30,11 @@ def main():
     else:
         print("File not exist")
         OUTPUT_DIR = "/Users/rhudock/output/"
-
         mimetypes.init()
-
         db_uri = 'sqlite:///db.sqlite'  # https://www.sqlite.org/datatype3.html
         engine = create_engine(db_uri)
-
         Session = sessionmaker(bind=engine)
         session = Session()
-
         # Files.__table__.create(engine)
         Base.metadata.create_all(engine)
         dirtoopen = diropenbox(msg="select directory:")
@@ -82,6 +76,7 @@ class Files(Base):
     FileLength = Column(Integer)
     FileType = Column(String)
 
+    @property
     def __repr__(self):
         return f"File: {self.Id, self.Name, self.MD5, self.FileType, self.FileRef, self.FileLength}"
 

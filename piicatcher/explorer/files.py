@@ -92,7 +92,6 @@ class FileExplorer:
         for f in self._files:
             tabular.append([f.get_name(), f.get_mime_type(), json.dumps(list(f.get_pii_types()),
                                                                         cls=PiiTypeEncoder)])
-
         return tabular
 
     def get_dict(self):

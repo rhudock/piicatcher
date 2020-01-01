@@ -52,6 +52,13 @@ class NERScanner(Scanner):
         """Scan the text and return an array of PiiTypes that are found"""
         logging.debug("Processing '{}'".format(text))
         doc = self.nlp(text)
+        for token in doc:
+            # Get the token text, part-of-speech tag and dependency label
+            token_text = token.text
+            token_pos = token.pos_
+            token_dep = token.dep_
+            # This is for formatting only
+            print("{:<12}{:<10}{:<10}".format(token_text, token_pos, token_dep))
         types = set()
         for ent in doc.ents:
             logging.debug("Found {}".format(ent.label_))

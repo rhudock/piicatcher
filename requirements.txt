@@ -1,3 +1,7 @@
+unidecode
+easygui
+sqlalchemy
+pandas
 # Dev/Deployment
 pypi-publisher
 commonregex
@@ -13,3 +17,4 @@ pyyaml
 python-magic
 pyathena[sqlalchemy]
 boto3 == 1.10.34
+tika

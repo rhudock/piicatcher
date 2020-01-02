@@ -11,13 +11,11 @@ def get_parser(parser_cls=argparse.ArgumentParser):
     parser = parser_cls()
     parser.add_argument("-c", "--config-file", help="Path to config file")
     parser.add_argument("-l", "--log-level", help="Logging Level", default="WARNING")
-
     sub_parsers = parser.add_subparsers()
     AthenaExplorer.parser(sub_parsers)
     RelDbExplorer.parser(sub_parsers)
     SqliteExplorer.parser(sub_parsers)
     files_parser(sub_parsers)
-
     return parser
 
 

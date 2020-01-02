@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import magic
+import csv
 
 from piicatcher.tokenizer import Tokenizer
 from piicatcher.explorer.metadata import NamedObject
@@ -14,7 +15,9 @@ def dispatch(ns):
     logging.debug("File Dispatch entered")
     explorer = FileExplorer(ns.path)
     explorer.scan()
-
+    with open("output.csv", "w") as f:
+        writer = csv.writer(f)
+        writer.writerows(explorer.data_db)
     if ns.output_format == "ascii_table":
         headers = ["Path", "Mime/Type", "pii"]
         tableprint.table(explorer.get_tabular(), headers)
@@ -46,7 +49,7 @@ class File(NamedObject):
     def get_mime_type(self):
         return self._mime_type
 
-    def scan(self, context):
+    def scan(self, context, data_db, ref):
         tokenizer = context['tokenizer']
         regex = context['regex']
         ner = context['ner']
@@ -56,17 +59,18 @@ class File(NamedObject):
         else:
             with open(self.get_name(), 'r') as f:
                 data = f.read()
-                [self._pii.add(pii) for pii in ner.scan(data)]
+                [self._pii.add(pii) for pii in ner.scan(data, data_db, ref=self.get_name())]
                 tokens = tokenizer.tokenize(data)
                 for t in tokens:
                     if not t.is_stop:
-                        [self._pii.add(pii) for pii in regex.scan(t.text)]
+                        [self._pii.add(pii) for pii in regex.scan(t.text, data_db, ref=self.get_name())]
 
 
 class FileExplorer:
     def __init__(self, path):
         self._path = path
         self._files = []
+        self.data_db = []
 
     def scan(self):
         logging.debug("Scanning %s" % self._path)
@@ -80,12 +84,12 @@ class FileExplorer:
                     file_path = os.path.join(root, filename)
                     mime_type = magic.from_file(file_path, mime=True)
 
-                    logging.debug('\t- full path: %s, mime_type: %s' % (file_path, mime_type))
+                    # print('\t- full path: %s, mime_type: %s' % (file_path, mime_type))
                     self._files.append(File(file_path, mime_type))
 
         context = {'tokenizer': Tokenizer(), 'regex': RegexScanner(), 'ner': NERScanner()}
         for f in self._files:
-            f.scan(context)
+            f.scan(context, self.data_db, ref=f._name)
 
     def get_tabular(self):
         tabular = []

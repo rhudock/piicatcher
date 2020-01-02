@@ -20,7 +20,7 @@ class NamedObject(ABC):
         return self._pii
 
     @abstractmethod
-    def scan(self, context):
+    def scan(self, context, data_db, ref):
         pass
 
 
@@ -35,7 +35,7 @@ class Schema(NamedObject):
     def get_tables(self):
         return self.tables
 
-    def scan(self, generator):
+    def scan(self, generator, data_db, ref):
         for table in self.tables:
             table.scan(generator)
             logging.debug("{} has {}".format(table.get_name(), table.get_pii_types()))
@@ -75,7 +75,7 @@ class Table(NamedObject):
     def get_columns(self):
         return self._columns
 
-    def scan(self, generator):
+    def scan(self, generator, data_db, ref):
         scanners = [
             RegexScanner(),
             NERScanner()

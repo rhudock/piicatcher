@@ -22,8 +22,21 @@ class PiiTypes(Enum):
     PASSWORD = auto()
     ICDTEN = auto()
     ICDNINE = auto()
+    MASTERCARD = auto()
+    VISA = auto()
+    AMEX = auto()
+    MD = auto()
+    TAX = auto()
+    MEDICAL_DOCTOR = auto()
+    BANK_TRANSFER = auto()
+    MEDICAL_RECORDS = auto()
+    TREATMENT = auto()
+    CA_DL = auto()
+    COMMON_DRUGS = auto()
 
 # Ref: https://stackoverflow.com/questions/24481852/serialising-an-enum-member-to-json
+
+
 class PiiTypeEncoder(json.JSONEncoder):
     def default(self, obj):
         if type(obj) == PiiTypes:

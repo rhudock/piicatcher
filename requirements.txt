@@ -1,3 +1,4 @@
+prettytable
 unidecode
 easygui
 sqlalchemy

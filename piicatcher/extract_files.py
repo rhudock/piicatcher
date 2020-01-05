@@ -17,9 +17,10 @@ from unidecode import unidecode
 from datetime import datetime
 import mimetypes
 import uuid
-# PHI Scanner
-from .explorer.files import dispatch
+import re
 
+# PHI Scanner
+# from .explorer.files import dispatch
 
 Base = declarative_base()
 
@@ -40,7 +41,7 @@ def main():
         # Files.__table__.create(engine)
         Base.metadata.create_all(engine)
         dir_to_open = diropenbox(msg="select directory:")
-        path_list = Path(dir_to_open).glob('**/*.docx')
+        path_list = Path(dir_to_open).glob('**/*.msg')
         for path in path_list:
             # because path is object not string
             path_in_str = str(path)
@@ -48,22 +49,31 @@ def main():
             # parsed = parser.from_file(path_in_str, 'http://127.0.0.1:'+str(PORT)+'/tika')
             md5 = md5_checksum(path_in_str)
             name = path.name
-            file_format_type = fileType(path.suffix)
-            content = tika_parser(path_in_str)
+            file_format_type = file_type(path.suffix)
+            (content, meta) = tika_parser(path_in_str)
             file_length = len(content)
             unique_ref = uuid.uuid4()
             output_file = str(output_dir) + str(unique_ref) + ".txt"
             f = open(output_file, "w+")
             f.writelines(content)
             f.close()
-            new_file = Files(Name=name, Path=path_in_str, FileRef=output_file, MD5=md5,
-                             FileType=file_format_type, FileLength=file_length)
+            new_file = Files(Name=name, Path=path_in_str, FileRef=output_file, MetaRef=str(unique_ref),
+                             MD5=md5, FileType=file_format_type, FileLength=file_length)
             session.add(new_file)
             session.commit()
-        query = session.query(Files).all()
-        df = pd.DataFrame(query)
-        df.head(4)
-        # print(str(df))
+            for x in meta.keys():
+                new_file = MetaData(FileRef=str(unique_ref), Key=str(x), KeyValue=str(meta[x]))
+                session.add(new_file)
+                session.commit()
+        from prettytable import from_db_cursor
+        import sqlite3 as lite
+        con = lite.connect('db.sqlite')
+        with con:
+            cur = con.cursor()
+            cur.execute('SELECT * FROM Files;')
+            x = from_db_cursor(cur)
+            # print(str(df))
+        print(x)
         # pool = Pool()
         # pool.map(tika_parser, paths)
 
@@ -74,13 +84,26 @@ class Files(Base):
     Name = Column(String)
     Path = Column(String)
     FileRef = Column(String)
+    MetaRef = Column(String)
     MD5 = Column(String)
     FileLength = Column(Integer)
     FileType = Column(String)
 
     @property
     def __repr__(self):
-        return f"File: {self.Id, self.Name, self.MD5, self.FileType, self.FileRef, self.FileLength}"
+        return f"File: {self.Id, self.Name, self.MD5, self.FileType, self.FileRef, self.MetaRef, self.FileLength}"
+
+
+class MetaData(Base):
+    __tablename__ = 'Metadata'
+    Id = Column(Integer, primary_key=True, autoincrement=True)
+    FileRef = Column(String)
+    Key = Column(String)
+    KeyValue = Column(String)
+
+    @property
+    def __repr__(self):
+        return f"File: {self.Id, self.FileRef, self.Key, self.KeyValue}"
 
 
 def md5_checksum(file_path):
@@ -98,7 +121,11 @@ def clean_text(text_to_clean):
     return ''.join(c for c in text_to_clean if c.isprintable())
 
 
-def fileType(file_extension):
+def file_type(file_extension):
+    mimetypes.add_type('application/vnd.ms-outlook',
+                       '.msg',
+                       True
+                       )
     return mimetypes.types_map[file_extension]
 
 
@@ -109,10 +136,12 @@ def tika_parser(file_path):
     content = parser.from_file(file_path, 'http://127.0.0.1:' + str(port) + '/tika')
     if 'content' in content:
         text = content['content']
+        meta = content['metadata']
     else:
         return
-    # Convert to string
-    return clean_text(str(text))
+    # assert isinstance(meta, object)
+    text = re.sub(r'(\n){2,}', '\n', str(text))
+    return str(text), meta
 
 
 if __name__ == '__main__':

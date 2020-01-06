@@ -160,7 +160,57 @@ common_drugs = re.compile(r'\b(Lisinopril|Atorvastatin|Levothyroxine|Metformin|A
                           r'|Nitrofurantoin|Mupirocin|Butalbital|Lansoprazole|Dexmethylphenidate|Budesonide|Mirabegron|'
                           r'Canagliflozin|Menthol|Terazosin|Progesterone|Amiodarone|Mometasone|Cefdinir|'
                           r'Atomoxetine|Linagliptin\b)', re.IGNORECASE)
-
+diagnosis = re.compile(
+    r'(aneurysm|Acne|cholecystitis|lymphoblastic|leukaemia|myeloid|pancreatitis|Addison\'s disease|'
+    r'liver disease|Allergic'
+    r' rhinitis|Allergies|Alzheimer\'s|Anal cancer|Anaphylaxis|Angioedema|Ankylosing spondylitis|Anorexia'
+    r' nervosa|Anxiety|Appendicitis|Arthritis|Asbestosis|Asthma|Atopic eczema|Attention deficit hyperactivity|'
+    r'ADHD|Autistic|Bacterial vaginosis|prostate enlargement|Bile duct cancer|cholangiocarcinoma|Binge eating|'
+    r'Bipolar|Bladder cancer|Blood poisoning|sepsis|Bone cancer|Bowel cancer|incontinence|polyps|Brain stem death|'
+    r'Brain tumours|Breast cancer|Bronchiectasis|Bronchitis|Bulimia|Bunion|Carcinoid|Catarrh|Cellulitis|'
+    r'Cervical cancer|Chest infection|Chest pain|Chickenpox|Chilblains|fatigue syndrome|kidney disease|'
+    r'lymphocytic leukaemia|myeloid leukaemia|Chronic obstructive pulmonary|COPD|Cirrhosis|Clostridium|'
+    r'Coeliac disease|Cold sore|Coma|Common cold|heart condition|heart disease|Conjunctivitis|Constipation'
+    r'|Cough|Crohn\'s disease|Croup|Cystic fibrosis|Cystitis|Deafblindness|Deep vein thrombosis|DVT|Dehydration'
+    r'|Dementia|Lewy bodies|abscess|Depression|Dermatitis|herpetiformis|Diabetes|Diarrhoea|Discoid eczema'
+    r'|Diverticular disease|diverticulitis|Dizziness|Lightheadedness|Down\'s syndrome|Dry mouth|Dysphagia|'
+    r'swallowing problems|Dystonia|Earache|Earwax|Ebola|Ectopic pregnancy|Endometriosis|Epilepsy|Erectile '
+    r'dysfunction|impotence|Escherichia coli|E. coli|Ewing sarcoma|Eye cancer|melanoma|Febrile '
+    r'seizures|Fever|Fibroids|Fibromyalgia|Flatulence|Flu|alcohol syndrome|Food poisoning|Fungal|'
+    r'infection|Gallbladder cancer|Gallstones|Ganglion cyst|Gastroenteritis|Gastro-oesophageal'
+    r'|reflux disease|herpes|warts|Germ cell tumours|Glandular fever|Gout|Gum disease|'
+    r'Haemorrhoid|spiles|Hairy cell leukaemia|Hand, foot and mouth disease|Hay fever|Head and neck cancer'
+    r'|Head lice and nits|Headaches|Hearing loss|Heart failure|Hepatitis|Hiatus hernia|High cholesterol|HIV|'
+    r'Hodgkin lymphoma|Huntington\'s disease|Hyperglycaemia|high blood sugar|Hyperhidrosis|Hypoglycaemia'
+    r'|low blood sugar|Idiopathic pulmonary fibrosis|Impetigo|Indigestion|Ingrown toenail|cardiac|Insomnia|'
+    r'anaemia|Irritable bowel syndrome|IBS|Irritable hip|Itching|Itchy bottom|Kaposi\'s sarcoma|Kidney cancer|'
+    r'Kidney infection|Kidney stones|Labyrinthitis|Lactose intolerance|Langerhans cell histiocytosis|'
+    r'Laryngeal cancer|larynx cancer|Laryngitis|Leg cramps|Lichen planus|Liver cancer|Liver disease|Liver tumours|'
+    r'Loss of libido|Lung cancer|Lupus|Lyme disease|Lymphoedema|Malaria|Malignant|tumour|cancerous|Malnutrition|'
+    r'Measles|Meningitis|Menopause|Mesothelioma|Middle ear infection|otitis media|Migraine|Miscarriage|'
+    r'Motor neurone disease|Mouth cancer|Oral Cancer|Mouth ulcer|myeloma|multiple sclerosis|Mumps|Meniere\'s '
+    r'disease|Nasal Cancer|sinus cancer|Nasopharyngeal cancer|throat cancer|nose cancer|Neuroblastoma|'
+    r'Neuroendocrine tumours|fatty liver disease|NAFLD|Non-Hodgkin lymphoma|Norovirus|Nosebleed|Obesity|'
+    r'Obsessive compulsive disorder|Obstructive sleep apnoea|Oesophageal cancer|Osteoarthritis|Osteoporosis|'
+    r'Osteosarcoma|Otitis externa|Ovarian cancer|Ovarian cyst|Overactive thyroid|Paget\'s disease|Pancreatic cancer'
+    r'|Panic disorder|Parkinson\'s disease|organ prolapse|Penile cancer|Peripheral neuropathy|Personality|'
+    r'disorder|Pleurisy|Pneumonia|Polymyalgia rheumatica|Post-traumatic stress disorder|Postnatal depression|'
+    r'Pregnancy'
+    r'|ulcers|bedsores|Prostate cancer|Psoriasis|Psoriatic arthritis|Psychosis|tumours|tumor'
+    r'|Raynaud\'s phenomenon'
+    r'|Reactive arthritis|Restless legs syndrome|Retinoblastoma|Rhabdomyosarcoma|Rheumatoid arthritis|Ringworm'
+    r'|fungal infection|Rosacea|Scabies|Scarlet fever|fever|Schizophrenia|Scoliosis|Septic shock|Sexually transmitted '
+    r'infections'
+    r'|sexually transmitted disease|Shingles|Shortness of breath|Sickle cell|Sinusitis|Sjogren\'s syndrome|Skin cancer'
+    r'|non-melanoma|Slapped cheek syndrome|Soft tissue sarcomas|Sore throat|Spleen|Stillbirth|Stomach ache'
+    r'|abdominal pain|Stomach cancer|Stomach ulcer|Stress|anxiety|low-mood|Stroke|Sudden infant death syndrome|SIDS'
+    r'|Suicide|Sunburn|Swollen glands|Testicular cancer|Thirst|Threadworms|Thrush in men|Thyroid cancer|Tinnitus'
+    r'|Tonsillitis|Tooth decay|cavity|Toothache|Transient ischaemic attack|Trigeminal neuralgia|Tuberculosis|diabetes'
+    r'|Ulcerative colitis|Underactive thyroid|Urinary tract infection|Urticaria|hives|Vaginal cancer|Vaginal thrush|'
+    r'Varicose eczema|Varicose veins|Venous leg ulcer|Vertigo|folate deficiency anaemia|Vomiting|nausea|'
+    r'Vulval cancer|Warts|verrucas|Whooping cough|Wilms’ tumour|kidney cancer|Womb cancer|uterus cancer|'
+    r'uterine cancer|endometrial cancer'
+    r'|Yellow fever)', re.IGNORECASE)
 
 regexes = {
     "dates": date,
@@ -190,7 +240,8 @@ regexes = {
     "medical_records": medical_records,
     'treatment_terms': treatment_terms,
     "california": california,
-    'common_drugs': common_drugs
+    'common_drugs': common_drugs,
+    'diagnosis': diagnosis
 
 }
 

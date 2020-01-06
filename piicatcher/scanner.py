@@ -74,6 +74,8 @@ class RegexScanner(Scanner):
             data_db.append(['CA_DL', text, "N/A", "N/A", ref])
         if regex_result.common_drugs:
             data_db.append(['COMMON_DRUGS', text, "N/A", "N/A", ref])
+        if regex_result.diagnosis:
+            data_db.append(['DIAGNOSIS', text, "N/A", "N/A", ref])
         return types
 
 
@@ -83,17 +85,17 @@ class NERScanner(Scanner):
 
     def __init__(self):
         self.nlp = spacy.load("en_core_web_lg")
-        self.nlp.max_length = 200000000
+        self.nlp.max_length = 100000000
         self.nlp2 = spacy.load("en_ner_bc5cdr_md")
         # pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.2.4/en_ner_craft_md-0.2.4.tar.gz
         # pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.2.4/en_core_sci_sm-0.2.4.tar.gz
-        self.nlp2.max_length = 200000000
+        self.nlp2.max_length = 100000000
         self.nlp3 = spacy.load("en_ner_bionlp13cg_md")
-        self.nlp3.max_length = 200000000
+        self.nlp3.max_length = 100000000
 
     def scan(self, text, data_db, ref):
         """Scan the text and return an array of PiiTypes that are found"""
-        # print("Processing '{}'".format(text))
+        print("Processing '{}'".format(ref))
         doc = self.nlp(text)
         types = set()
         for ent in doc.ents:
@@ -111,12 +113,12 @@ class NERScanner(Scanner):
         doc = self.nlp2(text)
         for ent in doc.ents:
             if ent.label_ == 'DISEASE':
-                types.add(PiiTypes.LOCATION)
+                types.add(PiiTypes.DISEASE)
                 data_db.append([ent.label_, ent.text, ent.start_char, ent.end_char, ref])
         doc = self.nlp3(text)
         for ent in doc.ents:
             if ent.label_ == 'CANCER' or 'ORGAN' or 'TISSUE' or 'CELL' or 'ANATOMICAL_SYSTEM':
-                types.add(PiiTypes.LOCATION)
+                types.add(PiiTypes.CANCER)
                 data_db.append([ent.label_, ent.text, ent.start_char, ent.end_char, ref])
             # print(ent, ent.label_)
         return list(types)

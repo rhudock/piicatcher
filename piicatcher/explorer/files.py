@@ -59,11 +59,13 @@ class File(NamedObject):
         else:
             with open(self.get_name(), 'r') as f:
                 data = f.read()
-                [self._pii.add(pii) for pii in ner.scan(data, data_db, ref=self.get_name())]
+                [self._pii.add(pii) for pii in ner.scan(data, data_db, ref=os.path.basename(self.get_name()))]
+                print(self.get_name())
                 tokens = tokenizer.tokenize(data)
                 for t in tokens:
                     if not t.is_stop:
-                        [self._pii.add(pii) for pii in regex.scan(t.text, data_db, ref=self.get_name())]
+                        [self._pii.add(pii) for pii in regex.scan(t.text, data_db,
+                                                                  ref=os.path.basename(self.get_name()))]
 
 
 class FileExplorer:
@@ -89,7 +91,8 @@ class FileExplorer:
 
         context = {'tokenizer': Tokenizer(), 'regex': RegexScanner(), 'ner': NERScanner()}
         for f in self._files:
-            f.scan(context, self.data_db, ref=f._name)
+            root_filename = os.path.basename(f._name)
+            f.scan(context, self.data_db, ref=root_filename)
 
     def get_tabular(self):
         tabular = []

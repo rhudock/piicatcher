@@ -23,6 +23,11 @@ import re
 # from .explorer.files import dispatch
 
 Base = declarative_base()
+# TODO Need to split files over 10000 lines else crash NLP split -l 10000 929aae55-e921-4279-849c-980331858df0.txt
+#  929aae55-e921-4279-849c-980331858df0
+# TODO filter on .txt, need to rename split files to remove excess entry
+#  find . -name '*\.a*' | while read f; do mv "$f" "${f//\.a/}"; done
+
 
 
 def main():

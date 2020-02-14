@@ -10,7 +10,7 @@ date = re.compile(
     r'november|dec\.?|december)\s+(?<!\:)(?<!\:\d)[0-3]?\d(?:st|nd|rd|th)?)(?:\,)?\s*(?:\d{4})?|'
     r'[0-3]?\d[-\./][0-3]?\d[-\./]\d{2,4}',
     re.IGNORECASE)
-time = re.compile('\d{1,2}:\d{2} ?(?:[ap]\.?m\.?)?|\d[ap]\.?m\.?', re.IGNORECASE)
+time = re.compile(r'\d{1,2}:\d{2} ?(?:[ap]\.?m\.?)?|\d[ap]\.?m\.?', re.IGNORECASE)
 phone = re.compile(
     r'((?:(?<![\d-])(?:\+?\d{1,3}[-.\s*]?)?(?:\(?\d{3}\)?[-.\s*]?)?\d{3}[-.\s*]?\d{4}(?![\d-]))|'
     r'(?:(?<![\d-])(?:(?:\(\+?\d{2}\))|(?:\+?\d{2}))\s*\d{2}\s*\d{3}\s*\d{4}(?![\d-])))')
@@ -212,6 +212,8 @@ diagnosis = re.compile(
     r'uterine cancer|endometrial cancer'
     r'|Yellow fever)', re.IGNORECASE)
 
+name_record = re.compile(r'(\b[A-Z][-\'a-zA-Z]+,?\s[A-Z][-\'a-zA-Z]{0,19}\b)')
+
 regexes = {
     "dates": date,
     "times": time,
@@ -241,8 +243,8 @@ regexes = {
     'treatment_terms': treatment_terms,
     "california": california,
     'common_drugs': common_drugs,
-    'diagnosis': diagnosis
-
+    'diagnosis': diagnosis,
+    'name_record': name_record
 }
 
 

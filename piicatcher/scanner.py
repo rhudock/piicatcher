@@ -72,10 +72,16 @@ class RegexScanner(Scanner):
             types.append(PiiTypes.TREATMENT)
         if regex_result.california:
             data_db.append(['CA_DL', text, "N/A", "N/A", ref])
+            types.append(PiiTypes.CA_DL)
         if regex_result.common_drugs:
             data_db.append(['COMMON_DRUGS', text, "N/A", "N/A", ref])
+            types.append(PiiTypes.COMMON_DRUGS)
         if regex_result.diagnosis:
             data_db.append(['DIAGNOSIS', text, "N/A", "N/A", ref])
+            types.append(PiiTypes.DIAGNOSIS)
+        if regex_result.name_record:
+            data_db.append(['NAME_RECORD', text, "N/A", "N/A", ref])
+            types.append(PiiTypes.NAME_RECORD)
         return types
 
 
@@ -105,6 +111,10 @@ class NERScanner(Scanner):
 
             if ent.label_ == 'GPE':
                 types.add(PiiTypes.LOCATION)
+                data_db.append([ent.label_, ent.text, ent.start_char, ent.end_char, ref])
+
+            if ent.label_ == 'NORP':
+                types.add(PiiTypes.NORP)
                 data_db.append([ent.label_, ent.text, ent.start_char, ent.end_char, ref])
 
         logging.debug("PiiTypes are {}".format(list(types)))

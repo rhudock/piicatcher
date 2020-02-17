@@ -18,6 +18,7 @@ from datetime import datetime
 import mimetypes
 import uuid
 import re
+import pprint
 
 # PHI Scanner
 # from .explorer.files import dispatch
@@ -29,17 +30,10 @@ Base = declarative_base()
 #  find . -name '*\.a*' | while read f; do mv "$f" "${f//\.a/}"; done
 
 
-
 def main():
-    file = Path("db.sqlite")
-    if file.exists():
-        print("File exists")
-        exit(1)
-    else:
-        print("File not exist")
         output_dir = "/Users/rhudock/output/"
         mimetypes.init()
-        db_uri = 'sqlite:///db.sqlite'  # https://www.sqlite.org/datatype3.html
+        db_uri = "postgres://rhudock:fun29giv@127.0.0.1:5432/rhudock"
         engine = create_engine(db_uri)
         _session = sessionmaker(bind=engine)
         session = _session()
@@ -67,18 +61,20 @@ def main():
             session.add(new_file)
             session.commit()
             for x in meta.keys():
-                new_file = MetaData(FileRef=str(unique_ref), Key=str(x), KeyValue=str(meta[x]))
+                new_file = MetaData(FileRef=str(unique_ref), Key=str(x),
+                                    KeyValue=str(meta[x]).replace('\x00', ''))
+                # ^ postgres sql does not like null characters
                 session.add(new_file)
                 session.commit()
         from prettytable import from_db_cursor
-        import sqlite3 as lite
-        con = lite.connect('db.sqlite')
-        with con:
-            cur = con.cursor()
-            cur.execute('SELECT * FROM Files;')
-            x = from_db_cursor(cur)
-            # print(str(df))
-        print(x)
+        # files = session.query(Files)
+        df = pd.DataFrame([u.__dict__ for u in session.query(Files).all()])
+        with pd.option_context('display.max_rows', 10, 'display.max_columns', None, 'display.width', 5000):
+            print(df[['Name', 'Id', 'MD5', 'MetaRef']])
+        # for u in session.query(Files).all():
+        #    pprint (u.__dict__)
+        # x = from_db_cursor(files)
+        # print(x)
         # pool = Pool()
         # pool.map(tika_parser, paths)
 
@@ -138,10 +134,13 @@ def tika_parser(file_path):
     """Returns converted format"""
     port = 32768
     # Extract text from document
-    content = parser.from_file(file_path, 'http://127.0.0.1:' + str(port) + '/tika')
+    content = parser.from_file(file_path, 'http://127.0.0.1:' +
+                               str(port) + '/tika')  # potential option: xmlContent=True
+
     if 'content' in content:
         text = content['content']
         meta = content['metadata']
+        print(text)
     else:
         return
     # assert isinstance(meta, object)

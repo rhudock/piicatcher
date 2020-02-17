@@ -6,6 +6,8 @@ import re
 import spacy
 import scispacy
 
+# TODO Context to database, map back to hits
+
 from piicatcher.piitypes import PiiTypes
 
 
